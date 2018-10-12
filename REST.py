@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ''' 
-    Classes and Functions:
+    Functions:
 		- '/api/v1.0/hostinfo'
 		- '/api/v1.0/func'
 		- '/api/v1.0/func/<Param>'
