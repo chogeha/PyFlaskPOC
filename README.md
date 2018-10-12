@@ -2,10 +2,12 @@
 Purpose for Learning Python Web Framework
 
 Step1: Create virtual environment 
-      "Python -m venv PyFlaskPOC"
+      - Python -m venv PyFlaskPOC" # for Windows
+      - Python3 -m venv PyFlaskPOC" # for Linux
       
 Step2: Active virtual environment
-      "PyFlaskPOC\Script\active" # For Windows
+      - PyFlaskPOC\Script\activate" # For Windows
+      - source PyFlaskPOC\bin\activate" # For Linux
       
 Step3: Install dependency modules
       "pip install -r requirements.txt"
