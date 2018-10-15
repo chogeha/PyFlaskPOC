@@ -12,7 +12,7 @@ __date__ = "10 Oct. 2018"
 # Known bugs that can't be fixed here:
 #   - TBD
 
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, send_from_directory
 from flask_restful import Resource, Api
 from sqlalchemy import create_engine
 from json import dumps
@@ -41,12 +41,13 @@ def _mf_QueryUploadPath():
 	else: # Linux
 		return "//opt//PyTestUploadTest"
 		
-		if '32' in self.strPlatform:
+		if '32' in strPlatform:
 			print("System is Linux 32Bits")
 		else:
 			print("System is Linux 64Bits")
 			
 UPLOAD_FOLDER = _mf_QueryUploadPath()
+DOWNLOAD_FOLDER = _mf_QueryUploadPath()
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
@@ -56,6 +57,10 @@ api = Api(app)
 hostname = ""
 localip = ""
 
+# Redirection purpose
+@app.route('/api/v1.0/<fn>')
+def Upload_File(fn):
+	return jsonify({'message': fn})
 
 class InvalidUsage(Exception):
     status_code = 400
@@ -100,7 +105,9 @@ class Function(Resource):
 				print("Print Model = ", header['Model'])
 			elif 'Apikey' in var:
 				print("Print APIKey = ", header['Apikey'])
-			
+			elif 'Filename' in var:
+				print("Filename = ", header['Filename'])
+				return send_from_directory(DOWNLOAD_FOLDER, header['Filename'])
 
 		#print('Get username = ', header['username'])
 		return jsonify({'message': 'API Test GET!'})
@@ -124,7 +131,7 @@ class Function(Resource):
 		print('Post stream = ', request.stream.read())
 
 		print('Test')
-		file = request.files['file']
+		file = request.files['file'] # depend on body setting
 		if file:
 			filename = secure_filename(file.filename)		
 			
@@ -140,10 +147,7 @@ class FunctionParam(Resource):
     def get(self, Param):
         return jsonify({'Param = ': Param})
 
-# Redirection purpose
-@app.route('/api/v1.0/<fn>')
-def Upload_File(fn):
-	return jsonify({'message': fn})
+
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
